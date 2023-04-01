@@ -3,12 +3,13 @@ import mockpersongenerator as mpg
 import youthaccount as ya
 import savingaccount as sa
 import datetime as dt
-import currencyexchange as ce
+import rateexchange as er
 
 
 class TaxReport:
     def __init__(self, bank):
         self.bank = bank
+        self.rate_exchange = er.RateExchange()  # Erstelle eine Instanz der RateExchange Klasse
 
     def generate(self):
 
@@ -27,30 +28,30 @@ class TaxReport:
             for account in client.accounts:
                 # alle Währungen der Accounts werden überprüft und im Falle von Fremdwährungen in CHF umgerechnet
                 if account.currency != 'CHF':
-                    exchange_rate = ce.get_exchange_rate(account.currency)
+                    date, exchange_rate = self.rate_exchange.get_exchange_rate(account.currency)
                     print(f"Converting {account.currency} to CHF at the rate {exchange_rate}")
 
                 if isinstance(account, ya.YouthAccount):
-                    youth_accounts[account.iban_number] = account.balance * (exchange_rate if account.currency != 'CHF' else 1)
+                    youth_accounts[account.iban_number] = account.balance * (
+                        exchange_rate if account.currency != 'CHF' else 1)
                 elif isinstance(account, sa.SavingAccount):
-                    savings_accounts[account.iban_number] = account.balance * (exchange_rate if account.currency != 'CHF' else 1)
+                    savings_accounts[account.iban_number] = account.balance * (
+                        exchange_rate if account.currency != 'CHF' else 1)
 
             # die umgerechneten Kontoinformationen werden ausgegeben
             if savings_accounts:
                 print("** Savings Accounts **")
                 for iban, balance in savings_accounts.items():
-                    print(f"{iban}: {balance:.2f} CHF")
+                    print(f"{iban}: {round(balance, 2)} CHF")
 
             if youth_accounts:
                 print("** Youth Accounts **")
                 for iban, balance in youth_accounts.items():
-                    print(f"{iban}: {balance:.2f} CHF")
-
+                    print(f"{iban}: {round(balance, 2)} CHF")
             print()
 
 
 if __name__ == '__main__':
-
     # Instanziieren einer Test-Bank
     test_bank = bank.Bank()
 

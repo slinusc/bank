@@ -1,6 +1,6 @@
 import savingaccount as sa
 import youthaccount as ya
-import currencyexchange as ce
+import rateexchange as re
 import mockpersongenerator as mpg
 import bankclient as bc
 import person as pn
@@ -9,6 +9,7 @@ class Bank:
     def __init__(self):
         self.clients = {}
         self.count_account = 1
+        self.rate_exchange = re.RateExchange()
 
     def create_new_client(self, person: pn.Person):
         client = bc.BankClient(person, f'K-Nr-{len(self.clients) + 1}')
@@ -44,11 +45,13 @@ class Bank:
                     to_account_currency = self.clients[client_key].accounts[k].currency
 
         if from_account_currency != 'CHF':
-            date, exchange_rate = ce.get_exchange_rate(from_account_currency)
+            date, exchange_rate = self.rate_exchange.get_exchange_rate(
+                from_account_currency)
             amount = round(amount / exchange_rate, 2)
 
         if to_account_currency != 'CHF':
-            date, exchange_rate = ce.get_exchange_rate(to_account_currency)
+            date, exchange_rate = self.rate_exchange.get_exchange_rate(
+                to_account_currency)
             amount = round(amount * exchange_rate, 2)
 
         for client_key in self.clients:
