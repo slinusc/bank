@@ -4,12 +4,15 @@ import rateexchange as re
 import mockpersongenerator as mpg
 import bankclient as bc
 import person as pn
+import currencyvalidation as cv
+
 
 class Bank:
     def __init__(self):
         self.clients = {}
         self.count_account = 1
         self.rate_exchange = re.RateExchange()
+        self.currency_validator = cv.CurrencyValidation()
 
     def create_new_client(self, person: pn.Person):
         client = bc.BankClient(person, f'K-Nr-{len(self.clients) + 1}')
@@ -20,6 +23,10 @@ class Bank:
     def create_account(self, client_key: str, account_type: str, balance, currency='CHF'):
         client = self.clients[client_key]
         iban = f"CH93 0076 2011 6238 1237 {self.count_account}"
+
+        if not self.currency_validator.check_valid_currencies(currency):
+            raise ValueError(f"Invalid currency: {currency}")
+
         if account_type == 'youth':
             account = ya.YouthAccount(client.person, iban, balance, currency)
             client.add_account(account)
@@ -92,9 +99,9 @@ if __name__ == '__main__':
     print()
 
     # Erstellen von Konten
-    test_bank.create_account(key_client1, 'saving', 500, "EUR")
+    test_bank.create_account(key_client1, 'saving', 500, "USD")
     test_bank.create_account(key_client1, 'youth', 10000, "CHF")
-    test_bank.create_account(key_client2, 'saving', 250000, "GBP")
+    test_bank.create_account(key_client2, 'saving', 250000, "EUR")
 
     # printen aller Klienten in Kundenkartei inkl. der Währung und IBAN
     for i in test_bank.clients:
@@ -106,16 +113,13 @@ if __name__ == '__main__':
         print()
 
     # Test von Transaktionen mit Fremdwährungen
-    print(test_bank.clients[key_client1].accounts[0])
-    print(test_bank.clients[key_client1].accounts[1])
-    test_bank.transaction('CH93 0076 2011 6238 1237 1', 'CH93 0076 2011 6238 1237 2', 99)
-    print(test_bank.clients[key_client1].accounts[0])
-    print(test_bank.clients[key_client1].accounts[1])
-
+    print(f'from: {test_bank.clients[key_client2].person.name}, balance: {test_bank.clients[key_client2].accounts[0].balance}')
+    print(f'to: {test_bank.clients[key_client1].person.name}, balance: {test_bank.clients[key_client1].accounts[0].balance}')
     print()
-
-    print(test_bank.clients[key_client2].accounts[0])
-    print(test_bank.clients[key_client1].accounts[0])
     test_bank.transaction('CH93 0076 2011 6238 1237 3', 'CH93 0076 2011 6238 1237 1', 200)
-    print(test_bank.clients[key_client2].accounts[0])
-    print(test_bank.clients[key_client1].accounts[0])
+    print()
+    print(f'{test_bank.clients[key_client2].person.name}, new balance: {test_bank.clients[key_client2].accounts[0].balance}')
+    print(f'{test_bank.clients[key_client1].person.name}, new balance: {test_bank.clients[key_client1].accounts[0].balance}')
+
+    # Test CurrencyValidation
+    # test_bank.create_account(key_client2, 'saving', 250000, "EUGAJAR")

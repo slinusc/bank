@@ -41,7 +41,6 @@ class RateExchange:
             raise ValueError(f"Error fetching exchange rates: {response.status_code}")
 
 
-
 if __name__ == "__main__":
 
     # Erstellen einer Instanz der RateExchange Klasse
