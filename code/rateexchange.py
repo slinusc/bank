@@ -2,6 +2,7 @@ import os
 import json
 import datetime as dt
 import requests
+import currencyvalidation as cv
 
 
 class RateExchange:
@@ -47,5 +48,6 @@ if __name__ == "__main__":
     exchange = RateExchange()
 
     # Cache wird automatisch beschrieben bzw. abgerufen, wenn letztes Update >= 1 Tag
-    date, rate = exchange.get_exchange_rate("USD")
-    print(f'{date}: 1 CHF = {rate} USD')
+    currency = "EUR"
+    date, rate = exchange.get_exchange_rate(currency)
+    print(f'{date}: 1 CHF = {rate} {currency}')
