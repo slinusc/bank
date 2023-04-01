@@ -22,6 +22,7 @@ class YouthAccount(ac.Account):
             raise ValueError('Bezug übersteigt monatliche Limite!')
         else:
             self.balance -= amount
+            return True
 
     def set_interest_rate(self, new_rate):
         self.interest_rate = new_rate

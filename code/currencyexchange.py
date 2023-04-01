@@ -4,7 +4,7 @@ import json
 import os
 
 
-def get_exchange_rates(to_curr):
+def get_exchange_rate(to_curr):
 
     if not os.path.exists('current_exchange_rates.json'):
         last_request = dt.date(year=1, month=1, day=1)
@@ -18,12 +18,13 @@ def get_exchange_rates(to_curr):
         with open('current_exchange_rates.json', 'r') as f:
             data = json.load(f)
 
-    return data['rates'][to_curr]
+    return data['last_request'], data['rates'][to_curr]
 
 
-def cache_exchange_rates(from_curr='CHF'):
+def cache_exchange_rates():
+    base_curr = 'CHF'
     file = 'current_exchange_rates.json'
-    url = f'https://open.er-api.com/v6/latest/{from_curr}'
+    url = f'https://open.er-api.com/v6/latest/{base_curr}'
     response = requests.request("GET", url)
     if response.status_code == 200:
         data = response.json()
@@ -42,4 +43,5 @@ def cache_exchange_rates(from_curr='CHF'):
 if __name__ == "__main__":
 
     # Cache wird automatisch beschrieben bzw. abgerufen, wenn letztes Update >= 1 Tag
-    print(f'1 CHF: {get_exchange_rates("USD")} USD')
+    date, rate = get_exchange_rate("USD")
+    print(f'{date}: 1 CHF = {rate} USD')

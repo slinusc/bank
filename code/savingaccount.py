@@ -21,6 +21,7 @@ class SavingAccount(acc.Account):
             self.balance -= amount * 1.02
         else:
             self.balance -= amount
+        return True
 
     def __repr__(self):
         return f'account type: {self.account_type}, owner: {self.client.name}, age: {self.client.age}, ' \

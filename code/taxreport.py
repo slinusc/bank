@@ -27,7 +27,7 @@ class TaxReport:
             for account in client.accounts:
                 # alle Währungen der Accounts werden überprüft und im Falle von Fremdwährungen in CHF umgerechnet
                 if account.currency != 'CHF':
-                    exchange_rate = ce.get_exchange_rates(account.currency)
+                    exchange_rate = ce.get_exchange_rate(account.currency)
                     print(f"Converting {account.currency} to CHF at the rate {exchange_rate}")
 
                 if isinstance(account, ya.YouthAccount):

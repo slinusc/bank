@@ -3,7 +3,7 @@ import mockpersongenerator as mpg
 
 class BankClient:
     def __init__(self, person, client_id):
-        self.customer_id = client_id
+        self.client_id = client_id
         self.person = person
         self.accounts = []
 
@@ -11,7 +11,7 @@ class BankClient:
         self.accounts.append(account)
 
     def __str__(self):
-        return f'customer id: {self.customer_id}, owner: {self.person}, accounts: {self.accounts}'
+        return f'customer id: {self.client_id}, owner: {self.person}, accounts: {self.accounts}'
 
 
 if __name__ == '__main__':
