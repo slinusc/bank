@@ -10,7 +10,7 @@ class CurrencyValidation:
     def get_valid_currencies(self):
         with open(self.file, 'r') as f:
             data = json.load(f)
-            valid_currencies = list(data['rates'].keys())  # Holen Sie sich die Währungscodes aus dem 'rates' Feld
+            valid_currencies = list(data['rates'].keys())
         return valid_currencies
 
     def check_valid_currencies(self, currency):

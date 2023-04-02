@@ -2,7 +2,6 @@ import os
 import json
 import datetime as dt
 import requests
-import currencyvalidation as cv
 
 
 class RateExchange:
